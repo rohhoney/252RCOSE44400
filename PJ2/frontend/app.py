@@ -9,24 +9,29 @@ BACKEND_URL = "http://backend:5001"
 
 @app.route("/", methods=["GET"])
 def index():
-    #TODO:
-    #- Send a GET request to BACKEND_URL + "/api/message"
     try:
-        resp = requests.get(f"{BACKEND_URL}/api/message")
-        resp.raise_for_status() #exception handling
-    #- Extract the message from the JSON response
+        resp = requests.get(f"{BACKEND_URL}/api/message", timeout=3)
+        resp.raise_for_status()
         data = resp.json()
-        message = data.get("message", "")
-        timestamp = data.get("timestamp", "")
+        raw_message = data.get("message", "")
     except Exception:
-        message = ""
-        timestamp =""
+        raw_message = ""
 
-    #- Render index.html and pass the message as "current_message"
-    return render_template("index.html", 
-                           current_message=message, 
-                           last_updated=timestamp,
-                           )
+    # v2: message 문자열에서 timestamp 파싱
+    prefix = " (updated at "
+    timestamp = ""
+    message = raw_message
+
+    idx = raw_message.rfind(prefix)
+    if idx != -1 and raw_message.endswith(")"):
+        timestamp = raw_message[idx + len(prefix):-1]  # 괄호 빼고
+        message = raw_message[:idx]
+
+    return render_template(
+        "index.html",
+        current_message=message,
+        last_updated=timestamp,
+    )
 
 @app.route("/update", methods=["POST"])
 def update():

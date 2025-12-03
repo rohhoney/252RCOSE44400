@@ -27,7 +27,7 @@ def write_message(msg: str):
 
 
     with open(DATA_PATH, "w") as f:
-        f.write(msg) #- Write msg to the file
+        f.write(full_msg) #- Write msg to the file
 
 
 @app.route("/api/message", methods=["GET"])
