@@ -17,11 +17,16 @@ def index():
     #- Extract the message from the JSON response
         data = resp.json()
         message = data.get("message", "")
+        timestamp = data.get("timestamp", "")
     except Exception:
         message = ""
+        timestamp =""
 
     #- Render index.html and pass the message as "current_message"
-    return render_template("index.html", current_message=message)
+    return render_template("index.html", 
+                           current_message=message, 
+                           last_updated=timestamp,
+                           )
 
 @app.route("/update", methods=["POST"])
 def update():

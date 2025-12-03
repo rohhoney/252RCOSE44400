@@ -22,6 +22,10 @@ def read_message():
 def write_message(msg: str):
     #TODO:
     #- Open DATA_PATH
+    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    full_msg = f"{msg} (updated at {now})"
+
+
     with open(DATA_PATH, "w") as f:
         f.write(msg) #- Write msg to the file
 
@@ -45,7 +49,9 @@ def update_message():
     write_message(msg)
     #- Return { "status": "ok" }
     return jsonify({"status":"ok"})
-
+@app.route("/api/health", methods=["GET"])
+def health():
+    return jsonify({"status": "healthy"})
 # v1 has no /api/health endpoint
 # (Students add this in v2)
 
